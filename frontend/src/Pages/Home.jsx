@@ -1,74 +1,127 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios'
 import Dropdown from "../Components/CustomSelect/Select";
 import LineChart from "../Components/Graph/LineChart";
 import Card from "../Components/Card/Card";
+
+
 const Home = () => {
 
-    const [showGrafica, setShowGrafica] = useState(false)
+    const [value, setValue] = useState(0)
     const [titleGraph, setNameGraph] = useState('Grafica')
     const [lastData, setLatsData] = useState({})
     const [last20, setLast20] = useState([])
+    const [dataGraph5, setDataGraph5] = useState([])
     const [data, setData] = useState([])
     const [labels, setLabels] = useState([])
 
     useEffect(() => {
+        getLastData()
+        const interval = setInterval(() => {
+            getLastData()
+            //updateDataGraph()
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+
+    useEffect(() => {
+      //  grafica5()
         axios.get('http://localhost:5500/data/experiment')
             .then(res => {
                 setLast20(res.data)
+
             })
     }, [])
 
-    useEffect(() => {
-        getLastData()
-    }, [])
 
-    const getLastData = () => {
-        axios.get('http://localhost:5500/data').then(res => {
-            console.log(res.data)
+
+
+    const getLastData = async () => {
+        await axios.get('http://localhost:5500/data/current').then(res => {
             const object = res.data[0]
-            object.Metano =object.Metano.toFixed(2)
-            object.Temperatura =object.Temperatura.toFixed(2)
-            object.GeneradorChispa =object.GeneradorChispa.toFixed(2)
-            object.Gas =object.Gas.toFixed(2)
+            object.Metano = object.Metano.toFixed(2)
+            object.Temperatura = object.Temperatura.toFixed(2)
+            object.Gas = object.Gas.toFixed(2)
+            object.GeneradorChispa = object.GeneradorChispa.toFixed(2)
+
+
             setLatsData(object)
         })
+
+        // clearTimeout()
     }
 
+    // const grafica5 = async () => {
+    //     await axios.get('http://localhost:5500/data/grafica5').then(res => {
+           
+    //         console.log(res.data)
+    //         setDataGraph5(res.data)
+    //         console.log(dataGraph5)
+           
+    //     })
+        
+    // }
 
-    const changeGraph = (show) => {
+    const changeGraph = async (show) => {
         let index = show.target.selectedIndex
-        console.log(last20)
+
         setNameGraph(show.target.options[index].text)
+        setValue(show.target.value)
 
         data.splice(0, data.length)
         labels.splice(0, labels.length)
+        // if (index === 5) {
+        //     grafica5().then(res=> {
+        //         console.log(res)
+        //         if (dataGraph5.length > 0) {
+        //             dataGraph5.map((x,index) => {
+        //                 console.log(index)
+        //                 data.unshift(x.GeneradorChispa)
+        //                 labels.unshift(x._id.fecha)
+        //             })
+        //         }
+        //         console.log("sale")
+        //         setData(data)
+        //         setLabels(labels)
+        //     })
+            
+        //   //  console.log(dataGraph5)
+            
+        // } else {
 
-        if (last20.length > 0) {
-            last20.map(x => {
-                if (index === 1) {
-                    data.unshift(x.Metano)
 
-                } else if (index === 2) {
-                    data.unshift(x.Temperatura)
+            if (last20.length > 0) {
+                last20.map(x => {
+                    if (index === 1) {
+                        data.unshift(x.Metano)
 
-                } else if (index === 3) {
-                    data.unshift(x.Gas)
+                    } else if (index === 2) {
+                        data.unshift(x.Temperatura)
 
-                } else if (index === 4) {
-                    data.unshift(x.GeneradorChispa)
+                    } else if (index === 3) {
+                        data.unshift(x.Metano)
 
-                }
-                labels.unshift(x.Fecha)
-            })
-        }
-        setData(data)
-        setLabels(labels)
+                    } else if (index === 4) {
+                        data.unshift( x.Gas !==0 && x.GeneradorChispa !== 0 ?  x.Metano : 0)
+                    } 
+                    if(index !==3)
+                        labels.unshift(x.Fecha)
+                    else
+                        labels.unshift(Number(x.Temperatura).toFixed(2))
+                })
+            }
+            setData(data)
+            setLabels(labels)
+    
+       // }
+        return null
     }
 
     return (
         <>
+
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                 <h1 className="mt-2 display-1">Dashboard</h1>
             </div>
@@ -76,7 +129,7 @@ const Home = () => {
                 <div class="container">
                     <div class="row">
                         <div class="col">
-                            <Card title={'Cantidad Metano'} icon={'bi bi-emoji-dizzy-fill'} cantidad={lastData.Metano + ' fotodiodos'} fecha={lastData.Fecha} />
+                            <Card title={'Metano'} icon={'bi bi-emoji-dizzy-fill'} cantidad={lastData.Metano + ' hhmm'} fecha={lastData.Fecha} />
                             <div />
                         </div>
                         <div class="col">
@@ -84,11 +137,13 @@ const Home = () => {
                             <div />
                         </div>
                         <div class="col">
-                            <Card title={'Gas'} icon={'bi bi-droplet-half'} cantidad={lastData.Gas + ' cm/s'} fecha={lastData.Fecha} />
+                            <Card title={'Gas'} icon={'bi bi-circle-fill'} color={Number(lastData.Gas) >  0 ? 'green' : 'red '}
+                             cantidad={Number(lastData.Gas) > 0 ? 'Encendido': "Apagado"} fecha={lastData.Fecha} />
                             <div />
                         </div>
                         <div class="col">
-                            <Card title={'Generador de Chispa'} icon={'bi bi-funnel-fill'} cantidad={lastData.GeneradorChispa + ' fotodiodos'} fecha={lastData.Fecha} />
+                            <Card title={'GeneradorChispa'} icon={'bi bi-circle-fill'} color={Number(lastData.GeneradorChispa)> 0 ? 'green':'red'}
+                            cantidad={Number(lastData.GeneradorChispa) >  0 ? 'Encendido' : 'Apagado'} fecha={lastData.Fecha} />
                             <div />
                         </div>
 
@@ -98,20 +153,21 @@ const Home = () => {
                 <div className="card" style={{ maxWidth: '1000px', alignSelf: 'center' }}>
                     <div style={{ alignContent: 'center', alignItems: 'center' }} >
                         <div className="my-3" style={{ maxWidth: '300px', marginLeft: 'auto', marginRight: 'auto' }}>
-                            <Dropdown items={[{ name: "Suciedad VS tiempo (vivienda)", value: '1' },
-                            { name: "Suelo VS tiempo", value: '2' },
-                            { name: "Gas VS tiempo", value: '3' },
-                            { name: "Suciedad VS tiempo (filtrado)", value: 4 },
-                            { name: "Cantidad de Gas", value: 5 }]}
-                                onChange={(e) => changeGraph(e)} />
+                            <Dropdown items={[
+                                { name: "Metano vs Tiempo", value: '1' },
+                                { name: "Temperatura VS tiempo", value: '2' },
+                                { name: "Metano vs Temperatura", value: '3' },
+                                { name: "Tiempo de uso", value: 4 }]}
+                                onChange={(e) => changeGraph(e).then()} />
                         </div>
 
                     </div>
                     <div className="container" >
 
-                            <div style={{ maxHeight: '1500px' }}>
-                                <LineChart titulo={titleGraph} datos={data} labels={labels} measure='Medida' />
-                            </div>
+                        <div style={{ maxHeight: '1500px' }}>
+                            {value!==0 && 
+                            <LineChart value={value} titulo={titleGraph} datos={data} labels={labels} ultimoDato={lastData} />}
+                        </div>
 
                     </div>
                 </div>

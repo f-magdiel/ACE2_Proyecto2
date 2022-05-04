@@ -2,7 +2,7 @@
 
 import React from "react";
 
-const Card = ({ title, icon, cantidad, fecha }) => {
+const Card = ({ title, icon, cantidad, fecha, color }) => {
     return (
         <div class="card text-center">
             <div class="card-header">
@@ -11,7 +11,7 @@ const Card = ({ title, icon, cantidad, fecha }) => {
                 </h5>
             </div>
             <div class="card-body">
-                <i class={icon} style={{ fontSize: 60 }} ></i>
+                <i class={icon} style={{ fontSize: 60 , color:color}} ></i>
                 <br /><hr />
                 <p class="card-text">{cantidad}</p>
             </div>

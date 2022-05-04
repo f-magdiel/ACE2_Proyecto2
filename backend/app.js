@@ -127,7 +127,7 @@ app.get("/data", async (req,res) => {
 
 // Endpoint para enviar los datos a mongo 
 app.post("/data",(req,res) => {
-    iniciar()
+    //iniciar()
     let now = new Date();
     let dia = now.getDay().toString();
     let mes = now.getMonth().toString();
@@ -143,8 +143,8 @@ app.post("/data",(req,res) => {
         mongoRercord.push({
             Metano: Math.random() * (100 - 0) + 0,
             Temperatura: Math.random() * (100 - 0) + 0,
-            Gas: Math.random() * (100 - 0) + 0,
-            GeneradorChispa: Math.random() * (100 - 0) + 0,
+            Gas: 0,
+            GeneradorChispa: 0,
             Tiempo:Math.random() * (100 - 0) + 0,
             Fecha: fecha
         })

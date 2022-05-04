@@ -24,11 +24,39 @@ ChartJS.register(
 
 
 
-const LineChart = ({titulo, datos, labels, measure}) => {
+
+const LineChart = ({ titulo, value, datos, labels, ultimoDato }) => {
 
     useEffect(() => {
-        console.log(datos)
+        if (ultimoDato !== {} ) {
+            changeGraph()
+        }
     })
+
+    const changeGraph = () => {
+
+        datos.splice(0, 1)
+        labels.splice(0, 1)
+        console.log(ultimoDato)
+        if (value === '1') {
+            datos.push(ultimoDato.Metano)
+
+        } else if (value === '2') {
+            datos.push(ultimoDato.Temperatura)
+
+        } else if (value === '3') {
+            datos.push(ultimoDato.Metano)
+
+        } else if (value === 4) {
+            data.unshift( ultimoDato.Gas !==0 && ultimoDato.GeneradorChispa !== 0 ?  ultimoDato.Metano : 0)
+        } 
+        if (value !== '3')
+            labels.push(ultimoDato.Fecha)
+        else
+            labels.push(ultimoDato.Temperatura)
+        
+
+    }
 
     const options = {
         responsive: true,
@@ -52,7 +80,7 @@ const LineChart = ({titulo, datos, labels, measure}) => {
         labels,
         datasets: [
             {
-                label: measure,
+                label: 'medida',
                 data: datos,
                 borderColor: "rgb(255, 99, 132)",
                 backgroundColor: "rgba(255, 99, 132, 0.5)"
