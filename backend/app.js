@@ -127,6 +127,7 @@ app.get("/data", async (req,res) => {
 
 // Endpoint para enviar los datos a mongo 
 app.post("/data",(req,res) => {
+    iniciar()
     let now = new Date();
     let dia = now.getDay().toString();
     let mes = now.getMonth().toString();
@@ -134,16 +135,17 @@ app.post("/data",(req,res) => {
     let hora = now.getHours().toString();
     let minuto = now.getMinutes().toString();
     let segundo = now.getSeconds().toString();
-    let fecha = dia+"-"+mes+"-"+year+" "+hora+":"+minuto+":"+segundo;
-    console.log(hora);// se consulta la fecha y se agrega a mongo
+    let fecha = year+"/"+mes+"/"+dia+"-"+hora+":"+minuto+":"+segundo;
+    
     let clientData = req.body
     let mongoRercord = []
     clientData.forEach( client => {
         mongoRercord.push({
-            SuciedadAgua: Math.random() * (100 - 0) + 0,
-            Humedad: Math.random() * (100 - 0) + 0,
-            Filtrado: Math.random() * (100 - 0) + 0,
-            Agua: Math.random() * (100 - 0) + 0,
+            Metano: Math.random() * (100 - 0) + 0,
+            Temperatura: Math.random() * (100 - 0) + 0,
+            Gas: Math.random() * (100 - 0) + 0,
+            GeneradorChispa: Math.random() * (100 - 0) + 0,
+            Tiempo:Math.random() * (100 - 0) + 0,
             Fecha: fecha
         })
     })
@@ -156,8 +158,26 @@ app.post("/data",(req,res) => {
         }
     })
 })
+var cronometro
+function iniciar(){
+   let contador_s=0
+   let contador_m=0
+    cronometro = setInterval(function(){
+        if (contador_s==60){
+            contador_s=0
+            contador_m++
+            if (contador_m==60){
+                contador_m=0
+            }
+        }
+        contador_s++
+        console.log(contador_m+":"+contador_s)
+    },1000)
+}
 
-
+function detener(){
+    clearInterval(cronometro)
+}
 
 
 app.delete("/data", (req,res) => {

@@ -2,10 +2,11 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const dataSchema = new Schema({
-        SuciedadAgua: Number,
-        Humedad: Number,
-        Filtrado: Number,
-        Agua: Number,
+        Metano: Number,
+        Temperatura: Number,
+        Gas: Number,
+        GeneradorChispa: Number,
+        Tiempo:Number,
         Fecha:String
 })
 
