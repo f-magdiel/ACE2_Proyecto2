@@ -72,7 +72,7 @@ const LineChart = ({ titulo, value, datos, labels, ultimoDato }) => {
         scales: {
             y: {
                 min: 0,
-                max: 100,
+                max: 500,
             }
         },
     };

@@ -35,7 +35,7 @@ app.use(function(req, res, next) {
 
 //----------------------------------------- ARDUINO
 
-/*
+
 const SerialPort = serialport.SerialPort;
 const portName = "COM3";
 
@@ -58,6 +58,17 @@ function onData(line){
     
     try{
         const datajson = JSON.parse(datastr)
+        let now = new Date();
+        now.setDate() // Cambiar Fecha
+        let dia = now.getDay().toString();
+        let mes = now.getMonth().toString();
+        let year = now.getFullYear().toString();
+        let hora = now.getHours().toString();
+        let minuto = now.getMinutes().toString();
+        let segundo = now.getSeconds().toString();
+        let fecha = year+"/"+mes+"/"+dia+"-"+hora+":"+minuto+":"+segundo;
+
+        datajson.Fecha = fecha
         console.log(datajson)
         const datanew = new Data(datajson);
         datanew.save(function (err, datapozo) {
@@ -70,7 +81,7 @@ function onData(line){
         console.log("Error al leer json")
     }
 }
-*/
+
 
 
 
@@ -136,19 +147,19 @@ app.post("/data",(req,res) => {
     let minuto = now.getMinutes().toString();
     let segundo = now.getSeconds().toString();
     let fecha = year+"/"+mes+"/"+dia+"-"+hora+":"+minuto+":"+segundo;
-    
+    console.log(fecha)
     let clientData = req.body
     let mongoRercord = []
     clientData.forEach( client => {
         mongoRercord.push({
-            Metano: Math.random() * (100 - 0) + 0,
-            Temperatura: Math.random() * (100 - 0) + 0,
-            Gas: 0,
-            GeneradorChispa: 0,
-            Tiempo:Math.random() * (100 - 0) + 0,
+            Metano: clientData.Metano,
+            Temperatura: clientData.Temperatura,
+            Gas: clientData.Gas,
+            GeneradorChispa: clientData.GeneradorChispa,
+            Tiempo: Math.random() * (100 - 1),
             Fecha: fecha
-        })
-    })
+        });
+    });
 
     Data.create(mongoRercord, (err, records) => {
         if(err){
