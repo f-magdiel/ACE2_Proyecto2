@@ -41,10 +41,11 @@ const Home = () => {
     const getLastData = async () => {
         await axios.get('http://localhost:5500/data/current').then(res => {
             const object = res.data[0]
+            console.log(object)
             object.Metano = object.Metano.toFixed(2)
             object.Temperatura = object.Temperatura.toFixed(2)
-            object.Gas = object.Gas.toFixed(2)
-            object.GeneradorChispa = object.GeneradorChispa.toFixed(2)
+            object.Gas = object.Gas
+            object.GeneradorChispa = object.GeneradorChispa
 
 
             setLatsData(object)

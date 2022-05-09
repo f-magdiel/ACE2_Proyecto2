@@ -47,8 +47,8 @@ const LineChart = ({ titulo, value, datos, labels, ultimoDato }) => {
         } else if (value === '3') {
             datos.push(ultimoDato.Metano)
 
-        } else if (value === 4) {
-            data.unshift( ultimoDato.Gas !==0 && ultimoDato.GeneradorChispa !== 0 ?  ultimoDato.Metano : 0)
+        } else if (value === '4') {
+            datos.push( ultimoDato.Gas !==0 && ultimoDato.GeneradorChispa !== 0 ?  ultimoDato.Metano : 0)
         } 
         if (value !== '3')
             labels.push(ultimoDato.Fecha)
